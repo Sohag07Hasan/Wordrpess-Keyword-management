@@ -10,6 +10,7 @@ class JfKeywordManagement{
 	static function init(){
 		add_action('admin_menu', array(get_class(), 'admin_menu'));
 		add_action('init', array(get_class(), 'form_submission_handler'));
+		register_activation_hook(JFKEYWORDMANAGEMENT_FILE, array(get_class(), 'manage_db'));
 	}
 	
 	//creating menu and submenu pages
@@ -54,6 +55,22 @@ class JfKeywordManagement{
 		if($_POST['page'] == 'addnew_keyword'){
 			$url = admin_url('admin.php?page=addnew_keyword');
 			$info = array();
+			$KwDb = self::get_db_instance();
+
+			if(empty($_POST['keyword']['keyword']) || empty($_POST['keyword']['priority'])) return;
+
+			$keyword_id = $KwDb->create_keyword($_POST['keyword']);
+			if($keyword_id > 0){
+				$info['keyword_id'] = $keyword_id;
+				$info['message'] = 1;
+			}
+			else{
+				$info['keyword_id'] = 0;
+				$info['message'] = 2;
+			}
+			
+			$url = add_query_arg($info, $url);
+			return self::do_redirect($url);
 		}
 	}
 	
@@ -83,5 +100,20 @@ class JfKeywordManagement{
 		
 		return new JfKeywordListTable();
 	}
+	
+	//get csv class instance
+	static function get_csv_parser(){
+		if(!class_exists('parseCSV')){
+			include self::abspath_for_script('classes/parsecsv.lib.php');
+		}
 		
+		return new parseCSV(); 
+	}
+	
+	
+	//plgugin activation
+	static function manage_db(){
+		$KwDb = self::get_db_instance();
+		return $KwDb->sync_db();
+	}	
 }
