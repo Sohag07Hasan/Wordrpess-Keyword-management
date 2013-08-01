@@ -84,4 +84,9 @@ class JfKeywordDb{
 		return $this->db->get_row("select * from $this->keyword where ID = '$keyword_id'");
 	}
 	
+	//get all the keywords for csv
+	function get_keywords_for_csv(){
+		return $this->db->get_results("select * from $this->keyword");
+	}
+	
 }

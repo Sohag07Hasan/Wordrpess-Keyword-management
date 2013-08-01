@@ -9,7 +9,7 @@ class JfKeywordManagement{
 	//initialize
 	static function init(){
 		add_action('admin_menu', array(get_class(), 'admin_menu'));
-		add_action('init', array(get_class(), 'form_submission_handler'));
+		add_action('admin_init', array(get_class(), 'form_submission_handler'));
 		register_activation_hook(JFKEYWORDMANAGEMENT_FILE, array(get_class(), 'manage_db'));
 	}
 	
@@ -52,6 +52,8 @@ class JfKeywordManagement{
 	
 	//form submission handler
 	static function form_submission_handler(){
+		
+		//add or edit new keyword
 		if($_POST['page'] == 'addnew_keyword'){
 			$url = admin_url('admin.php?page=addnew_keyword');
 			$info = array();
@@ -71,6 +73,24 @@ class JfKeywordManagement{
 			
 			$url = add_query_arg($info, $url);
 			return self::do_redirect($url);
+		}
+		
+		
+		//export csv
+		if($_POST['keyword_export_csv'] == 'y'){
+			$KwDb = self::get_db_instance();
+			$keywords = $KwDb->get_keywords_for_csv();
+			$d_array = array();
+			
+			if($keywords){
+				foreach($keywords as $keyword){
+					$d_array[] = array(
+						'Keyword' => $keyword->keyword,
+						'Priority' => $keyword->priority,
+						'Status' => $keyword->status == 1 ? '' : 'Used'		
+					);
+				}
+			}
 		}
 	}
 	
