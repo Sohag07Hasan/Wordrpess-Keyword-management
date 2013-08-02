@@ -7,7 +7,7 @@ class JfKeywordDb{
 	
 	private $keyword;
 	private $keyword_meta;
-	private $db;
+	public $db;
 	
 	//constructor
 	function __construct(){
@@ -88,5 +88,31 @@ class JfKeywordDb{
 	function get_keywords_for_csv(){
 		return $this->db->get_results("select * from $this->keyword");
 	}
+
 	
+	//get total keywords
+	function get_total_keywords($search = null){
+		$sql = "select count(ID) from $this->keyword";
+		if($search){
+			$sql .= " where keyword like '%$search%'";
+		}
+		return $this->db->get_var($sql);
+	}
+	
+	
+	//return table names
+	function get_keyword_table(){
+		return $this->keyword;
+	}
+	
+	
+	//delete a keyword
+	function delete_keyword($keyword_id){
+		$sql = array();
+		$sql[] = "delete from $this->keyword where ID = '$keyword_id'";
+		$sql[] = "delete from $this->keyword_meta where keyword_id = '$keyword_id'";
+		foreach($sql as $s){
+			$this->db->query($s);
+		}
+	}
 }

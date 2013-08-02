@@ -26,7 +26,8 @@ class JfKeywordManagement{
 	//menu page for keyword management
 	static function menu_page_keyword_management(){
 		include self::abspath_for_script('includes/menu-submenu/menupage-keyword-management.php');
-	}
+	}	
+	
 		
 	//submenu to get add or edit screen
 	static function submenu_add_or_edit_keyword(){
