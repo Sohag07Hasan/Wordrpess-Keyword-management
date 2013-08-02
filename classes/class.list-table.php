@@ -65,7 +65,7 @@ class JfKeywordListTable extends WP_List_Table{
 		$this->current_page = $this->get_pagenum(); //it comes form mother class (WP_List_Table)
 	
 		$this->total_items = $this->KwDb->get_total_keywords($_REQUEST['s']);
-		$this->per_page = 10;
+		$this->per_page = 25;
 	
 		$this->set_pagination_args( array(
 				'total_items' => $this->total_items,                  //WE have to calculate the total number of items
