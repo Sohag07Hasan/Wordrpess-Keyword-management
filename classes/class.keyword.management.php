@@ -91,6 +91,10 @@ class JfKeywordManagement{
 					);
 				}
 			}
+			
+			$csv = self::get_csv_parser();
+			$csv->output('keywords.csv', $d_array, array('Keyword', 'Priority', 'Status'), ',');
+			exit;
 		}
 	}
 	
