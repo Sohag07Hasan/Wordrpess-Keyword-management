@@ -97,6 +97,36 @@ class JfKeywordManagement{
 			$csv->output('keywords.csv', $d_array, array('Keyword', 'Priority', 'Status'), ',');
 			exit;
 		}
+		
+		
+		// list table's bulk action
+		if($_REQUEST['keyword_table_bulk_action'] == 'y'){
+			
+			$sendback = remove_query_arg( array('deleted', 'keyword_id', 'keyword_table_bulk_action'), wp_get_referer() );
+						
+			if(!$sendback){
+				$sendback = admin_url('admin.php?page=keyword_manager');
+			}
+			
+			$wp_list_table = self::get_list_table();
+			$doaction = $wp_list_table->current_action();
+			$pagenum = $wp_list_table->get_pagenum();
+			
+			$sendback = add_query_arg( 'paged', $pagenum, $sendback );
+			
+			if($doaction == 'delete'){
+				$deleted = $wp_list_table->handle_bulk_action();
+				$sendback = add_query_arg('deleted', $deleted, $sendback);
+			}
+			
+			$sendback = remove_query_arg( array('action', 'action2', '_wp_http_referer', '_wpnonce'), $sendback );
+			if(!empty($_REQUEST['s'])){
+				$sendback = add_query_arg( 's', $_REQUEST['s'], $sendback );
+			}
+			
+			return self::do_redirect($sendback);
+		}		
+		
 	}
 	
 	//do a redirect

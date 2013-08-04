@@ -182,7 +182,7 @@ class JfKeywordListTable extends WP_List_Table{
 		
 		//var_dump($_REQUEST['keyword_id']);
 		
-		$message = null;
+		$message = 0;
 		if($this->current_action() == 'delete'){
 			$keyword_ids = $_REQUEST['keyword_id'];
 		
@@ -194,7 +194,7 @@ class JfKeywordListTable extends WP_List_Table{
 				$this->KwDb->delete_keyword($keyword_id);
 			}
 			
-			$message = count($keyword_ids) . ' deleted';			
+			$message = count($keyword_ids);			
 		}
 		
 		return $message;
