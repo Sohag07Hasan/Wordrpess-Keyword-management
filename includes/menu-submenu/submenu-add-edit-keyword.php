@@ -4,6 +4,8 @@
 	if($_REQUEST['keyword_id'] > 0){
 		$KwDb = self::get_db_instance();
 		$keyword = $KwDb->get_keyword($_REQUEST['keyword_id']);
+		
+		var_dump($keyword);
 	}
 ?>
 
@@ -29,7 +31,7 @@
 		
 		<?php 
 			if($_REQUEST['keyword_id'] > 0 && !empty($keyword)){
-				echo '<input type="hidden" name="keyword[id]" value="'.$keyword->ID.'" />';
+				echo '<input type="hidden" name="keyword[id]" value="'.$keyword->id.'" />';
 			}
 		?>
 		

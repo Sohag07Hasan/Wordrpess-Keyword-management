@@ -10,6 +10,7 @@
 			$csv->parse($_FILES['csv_keywords']['tmp_name']);
 			
 			$KwDb = self::get_db_instance();
+			$KwDb->is_import = true;
 			
 			$imported = 0;
 			$skipped = 0;

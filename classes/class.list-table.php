@@ -42,8 +42,7 @@ class JfKeywordListTable extends WP_List_Table{
 				'keyword' => __('Keyword'),
 				'priority' => __('Priority'),
 				'status' => __('Status'),
-				'post_id' => __('Associated Post')
-		);
+			);
 	
 		return $columns;
 	}
@@ -102,12 +101,14 @@ class JfKeywordListTable extends WP_List_Table{
 		
 		if($keywords){
 			foreach($keywords as $keyword){
+				
+				$is_used = $this->KwDb->is_used($keyword->id);
+				
 				$sanitized_keywords[] = array(
-					'ID' => $keyword->ID,
+					'id' => $keyword->id,
 					'keyword' => $keyword->keyword,
 					'priority' => $keyword->priority,
-					'status' => $keyword->status == 1 ? "" : "Used",
-					'post_id' => $keyword->post_id > 0 ? $keyword->post_id : ''				
+					'status' => $is_used ? "Used" : "Not Used",
 				);
 			}
 		}
@@ -121,7 +122,7 @@ class JfKeywordListTable extends WP_List_Table{
 	/* checkbox for bulk action*/
 	function column_cb($item) {
 		return sprintf(
-				'<input type="checkbox" name="keyword_id[]" value="%s" />', $item['ID']
+				'<input type="checkbox" name="keyword_id[]" value="%s" />', $item['id']
 		);
 	}
 	
@@ -129,12 +130,11 @@ class JfKeywordListTable extends WP_List_Table{
 	/* default column checking and it is must */
 	function column_default($item, $column_name){
 		switch($column_name){
-			case "ID":
+			case "id":
 			case "keyword":
 			case "priority":
 			case "status":
-			case "post_id":
-				return $item[$column_name];
+			return $item[$column_name];
 				break;
 			default:
 				var_dump($item);
@@ -148,7 +148,7 @@ class JfKeywordListTable extends WP_List_Table{
 	 *  */
 	function column_keyword($item){
 	
-		$delete_href = sprintf('?page=%s&action=%s&keyword_id=%s', $_REQUEST['page'],'delete',$item['ID']);
+		$delete_href = sprintf('?page=%s&action=%s&keyword_id=%s', $_REQUEST['page'],'delete',$item['id']);
 	
 		if(isset($_REQUEST['s']) && !empty($_REQUEST['s'])){
 			$delete_href = add_query_arg(array('s'=>$_REQUEST['s']), $delete_href);
@@ -159,7 +159,7 @@ class JfKeywordListTable extends WP_List_Table{
 		}
 	
 		$actions = array(
-				'edit' => sprintf('<a href="?page=%s&action=%s&keyword_id=%s">Edit</a>','addnew_keyword','edit',$item['ID']),
+				'edit' => sprintf('<a href="?page=%s&action=%s&keyword_id=%s">Edit</a>','addnew_keyword','edit',$item['id']),
 				'delete' => "<a href='$delete_href'>Delete</a>"
 		);
 	
